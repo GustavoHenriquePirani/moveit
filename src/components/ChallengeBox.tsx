@@ -1,28 +1,47 @@
 import styles from "../styles/components/ChallengeBox.module.css";
+import { useContext } from "react";
+import { ChallengesContext } from "@/contexts/ChallengesContext";
+import { CountdownContext } from "@/contexts/CountDownContext";
 
 export function ChallengeBox() {
-  const hasActiveChallenge = true;
+  const { activeChallenge, resetChallenge, completeChallenge } = useContext(ChallengesContext);
+  const {resetCountdown} = useContext(CountdownContext);
+
+  function handleChallengeSuceeded() {
+    completeChallenge();
+    resetCountdown();
+  }
+
+  function handleChallengeFailed() {
+    resetChallenge();
+  }
 
   return (
     <div className={styles.challengeBoxContainer}>
-      {hasActiveChallenge ? (
+      {activeChallenge ? (
         <div className={styles.challengeActive}>
-          <header>Ganhe 400xp</header>
+          <header>Ganhe {activeChallenge.amount}xp</header>
 
           <main>
-            <img src="icons/body.svg" alt="" />
+            <img src={`icons/${activeChallenge.type}.svg`} alt="" />
             <strong>Novo desafio</strong>
-            <p>Levante e faça uma caminhada de 3 minutos</p>
+            <p>{activeChallenge.description}</p>
           </main>
 
           <footer>
-            <button type="button" 
-            className={styles.challengeFailedButton}>
+            <button
+              type="button"
+              className={styles.challengeFailedButton}
+              onClick={handleChallengeFailed}
+            >
               Falhei
             </button>
 
-            <button type="button"
-             className={styles.challengeSucceededButton}>
+            <button
+              type="button"
+              className={styles.challengeSucceededButton}
+              onClick={handleChallengeSuceeded}
+            >
               Completei
             </button>
           </footer>
